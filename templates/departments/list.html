@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Departments List{% endblock %}
+
+{% block content %}
+<div class="mb-8 flex justify-between items-center">
+    <h1 class="text-2xl font-bold">Departments</h1>
+    <div class="flex items-center space-x-4">
+        <div class="relative">
+            <input type="search" placeholder="Search departments..." class="pl-10 pr-4 py-2 border rounded-lg">
+            <i class="bi bi-search absolute left-3 top-3 text-gray-400"></i>
+        </div>
+        <a href="{% url 'departments:create' %}" class="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg">
+            <i class="bi bi-plus"></i>
+            <span>Add Department</span>
+        </a>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="bg-white p-4 rounded-lg shadow-sm mb-6">
+    <div class="flex flex-wrap gap-4">
+        <select class="border rounded-lg px-4 py-2">
+            <option>All Heads</option>
+            {% for head in heads %}
+            <option>{{ head.name }}</option>
+            {% endfor %}
+        </select>
+        <select class="border rounded-lg px-4 py-2">
+            <option>Status</option>
+            <option>Active</option>
+            <option>Inactive</option>
+        </select>
+        <button class="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg">
+            Clear Filters
+        </button>
+    </div>
+</div>
+
+<!-- Departments Table -->
+<div class="bg-white rounded-lg shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gray-50 border-b">
+                <tr>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Department Name</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Head</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Teachers</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Subjects</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Status</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y">
+                {% for department in departments %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 font-medium">
+                        <a href="{{ department.get_detail_url }}">
+                            {{ department.name }}
+                        </a>
+                    </td>
+                    <td class="px-6 py-4 text-sm">{{ department.head.name }}</td>
+                    <td class="px-6 py-4 text-sm">{{ department.teachers.count }} teachers</td>
+                    <td class="px-6 py-4 text-sm">{{ department.subjects|join:", " }}</td>
+                    <td class="px-6 py-4 text-sm">
+                        <span class="px-2 py-1 rounded-lg text-white {% if department.is_active %}bg-green-500{% else %}bg-gray-400{% endif %}">
+                            {{ department.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center space-x-3">
+                            <!-- Ko‘rish tugmasi -->
+                            <a href="{{ department.get_detail_url }}" class="text-gray-600 hover:text-gray-800">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <!-- Tahrirlash tugmasi -->
+                            <a href="{{ department.get_update_url }}" class="text-gray-600 hover:text-gray-800">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <!-- O‘chirish tugmasi -->
+                            <form action="{{ department.get_delete_url }}" method="post" class="inline">
+                                {% csrf_token %}
+                                <button type="submit" class="text-red-600 hover:text-red-800">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+<nav class="bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex items-center">
+                <h1 class="text-xl font-bold text-blue-600"><a href="{% url 'home' %}" class="text-blue-600 hover:text-blue-800">Dashboard</a></h1>
+            </div>
+            {% if user.is_authenticated %}
+                <div class="flex items-center">
+                    <form method="post" action="{% url 'users:logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-box-arrow-right me-1"></i>Logout
+                        </button>
+                    </form>
+                    <a href="{% url 'users:update_profile' %}" class="ml-4 text-gray-700 hover:text-gray-900">
+                        <i class="bi bi-person-circle me-1"></i>Update Profile
+                    </a>
+                </div>
+            {% else %}
+                <div class="flex items-center">
+                    <a href="{% url 'users:login' %}" class="mx-2 text-blue-600 hover:text-blue-800">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</nav>
