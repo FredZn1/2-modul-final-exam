@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Student{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="mb-8 flex items-center justify-between">
+        <h1 class="text-2xl font-bold">
+            {% if student %}Edit{% else %}Add{% endif %} Student
+        </h1>
+        <a href="{% url 'students:list' %}" class="text-gray-500 hover:text-gray-700">
+            <i class="bi bi-x-lg"></i>
+        </a>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="bg-white rounded-lg shadow-sm p-6">
+        {% csrf_token %}
+        <div class="space-y-6">
+            <!-- Profile Photo -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Profile Photo</label>
+                <div class="flex items-center space-x-4">
+                    {% if student.profile_photo %}
+                    <img src="{{ student.profile_photo.url }}" class="w-20 h-20 rounded-full">
+                    {% else %}
+                    <div class="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center">
+                        <i class="bi bi-person text-3xl text-gray-400"></i>
+                    </div>
+                    {% endif %}
+                    {{ form.profile_photo }}
+                </div>
+            </div>
+
+            <!-- Personal Information -->
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                    {{ form.first_name }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                    {{ form.last_name }}
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+                {{ form.date_of_birth }}
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+                {{ form.gender }}
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                {{ form.email }}
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                {{ form.phone_number }}
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Group</label>
+                {{ form.group }}
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
+                {{ form.grade }}
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                {{ form.address }}
+            </div>
+
+            <!-- Parent Information -->
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Parent Name</label>
+                    {{ form.parent_name }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Parent Phone</label>
+                    {{ form.parent_phone }}
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Parent Email</label>
+                {{ form.parent_email }}
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                {{ form.status }}
+            </div>
+
+            <!-- Form Errors -->
+            {% if form.errors %}
+            <div class="text-red-500 text-sm">
+                <ul>
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <div class="flex items-center justify-end space-x-4">
+                <a href="{% url 'students:list' %}" class="px-4 py-2 border rounded-lg hover:bg-gray-50">
+                    Cancel
+                </a>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    {% if student %}Update{% else %}Save{% endif %} Student
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

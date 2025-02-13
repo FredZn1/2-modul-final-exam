@@ -1,0 +1,31 @@
+<aside class="w-64 bg-white border-r overflow-y-auto">
+    <div class="p-4">
+        <h1 class="text-xl font-bold text-blue-600 mb-8">School CRM</h1>
+        <nav class="space-y-2">
+            <a href="{% url 'home' %}" class="flex items-center space-x-2 px-4 py-2 rounded-lg bg-blue-50 text-blue-600">
+                <i class="bi bi-grid"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{% url 'departments:list' %}" class="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-50">
+                <i class="bi bi-building"></i>
+                <span>Departments</span>
+            </a>
+            <a href="{% url 'students:list' %}" class="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-50">
+                <i class="bi bi-people"></i>
+                <span>Students</span>
+            </a>
+            <a href="{% url 'teachers:list' %}" class="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-50">
+                <i class="bi bi-person-badge"></i>
+                <span>Teachers</span>
+            </a>
+            <a href="{% url 'groups:list' %}" class="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-50">
+                <i class="bi bi-collection"></i>
+                <span>Groups</span>
+            </a>
+            <a href="{% url 'subjects:list' %}" class="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-50">
+                <i class="bi bi-book"></i>
+                <span>Subjects</span>
+            </a>
+        </nav>
+    </div>
+</aside>

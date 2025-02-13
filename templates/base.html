@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School CRM - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet"></head>
+<body class="bg-gray-50">
+    <div class="flex h-screen overflow-hidden">
+        {# SIDEBAR #}
+        {% include 'includes/sidebar.html' %}
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+            {# NAVBAR #}
+            {% include 'includes/nav.html' %}
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-8">
+                {# CONTENT #}
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+{# MODAL #}
+<div id="addNewModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+    <div class="relative p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="flex justify-between items-center pb-3 border-b">
+            <h3 class="text-lg font-semibold">Add New</h3>
+            <button onclick="closeModal()" class="text-gray-400 hover:text-gray-500">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="mt-4 space-y-2">
+            <a href="{% url 'departments:create' %}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50">
+                <div class="p-2 bg-indigo-50 rounded-lg">
+                    <i class="bi bi-building text-indigo-600"></i>
+                </div>
+                <div>
+                    <p class="font-medium">Add Department</p>
+                    <p class="text-sm text-gray-500">Create a new department</p>
+                </div>
+            </a>
+            <a href="{% url 'students:create' %}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50">
+                <div class="p-2 bg-blue-50 rounded-lg">
+                    <i class="bi bi-people text-blue-600"></i>
+                </div>
+                <div>
+                    <p class="font-medium">Add Student</p>
+                    <p class="text-sm text-gray-500">Register a new student</p>
+                </div>
+            </a>
+            <a href="{% url 'teachers:create' %}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50">
+                <div class="p-2 bg-green-50 rounded-lg">
+                    <i class="bi bi-person-badge text-green-600"></i>
+                </div>
+                <div>
+                    <p class="font-medium">Add Teacher</p>
+                    <p class="text-sm text-gray-500">Register a new teacher</p>
+                </div>
+            </a>
+            <a href="{% url 'groups:create' %}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50">
+                <div class="p-2 bg-purple-50 rounded-lg">
+                    <i class="bi bi-collection text-purple-600"></i>
+                </div>
+                <div>
+                    <p class="font-medium">Add Group</p>
+                    <p class="text-sm text-gray-500">Create a new group</p>
+                </div>
+            </a>
+            <a href="{% url 'subjects:create' %}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50">
+                <div class="p-2 bg-orange-50 rounded-lg">
+                    <i class="bi bi-book text-orange-600"></i>
+                </div>
+                <div>
+                    <p class="font-medium">Add Subject</p>
+                    <p class="text-sm text-gray-500">Create a new subject</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+{# MODAL SCRIPT #}
+<script>
+    function openModal() {
+        document.getElementById('addNewModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('addNewModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+
+    document.getElementById('addNewModal').addEventListener('click', function(event) {
+        if (event.target === this) {
+            closeModal();
+        }
+    });
+
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeModal();
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="mb-8 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <div class="p-3 bg-orange-50 rounded-lg">
+                <i class="bi bi-book text-2xl text-orange-600"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold">{{ subject.name }}</h1>
+                <p class="text-gray-500">Subject ID: {{ subject.subject_id }}</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <a href="{{ subject.get_update_url }}" class="px-4 py-2 border rounded-lg hover:bg-gray-50">
+                <i class="bi bi-pencil"></i>
+                <span class="ml-2">Edit</span>
+            </a>
+            <form action="{{ subject.get_delete_url }}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100">
+                    <i class="bi bi-trash"></i>
+                    <span class="ml-2">Delete</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Subject Info -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div class="lg:col-span-2 bg-white rounded-lg shadow-sm p-6">
+            <h2 class="text-lg font-semibold mb-4">Subject Information</h2>
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm text-gray-500">Department</label>
+                    <p class="text-gray-900">{{ subject.department.name }}</p>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-500">Credit Hours</label>
+                    <p class="text-gray-900">{{ subject.credit_hours }}</p>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-500">Grade Level</label>
+                    <p class="text-gray-900">{{ subject.grade_level }}</p>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-500">Status</label>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                        {% if subject.is_active %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                        {% if subject.is_active %} Active {% else %} Inactive {% endif %}
+                    </span>
+                </div>
+                <div class="col-span-2">
+                    <label class="block text-sm text-gray-500">Description</label>
+                    <p class="text-gray-900">{{ subject.description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teachers -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <h3 class="text-lg font-semibold mb-4">Teachers</h3>
+        <div class="space-y-4">
+            {% for teacher in subject.teachers.all %}
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                        <i class="bi bi-person text-xl text-gray-400"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium">{{ teacher.full_name }}</p>
+                        <p class="text-sm text-gray-500">{{ teacher.role }}</p>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-gray-500">No teachers assigned.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Groups List -->
+    <div class="bg-white rounded-lg shadow-sm mt-6">
+        <div class="p-6 border-b">
+            <h2 class="text-lg font-semibold">Current Groups</h2>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for group in subject.groups.all %}
+                    <div class="p-4 border rounded-lg">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-medium">{{ group.name }}</h3>
+                            <span class="text-sm text-gray-500">{{ group.student_count }} students</span>
+                        </div>
+                        <p class="text-sm text-gray-500">{{ group.schedule }}</p>
+                    </div>
+                {% empty %}
+                    <p class="text-gray-500">No groups available.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

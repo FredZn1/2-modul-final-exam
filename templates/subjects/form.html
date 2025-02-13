@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Subject{% endblock %}
+
+{% block content %}
+<main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-8">
+    <div class="max-w-2xl mx-auto">
+        <div class="mb-8 flex items-center justify-between">
+            <h1 class="text-2xl font-bold">Add Subject</h1>
+            <a href="{% url 'subjects:list' %}" class="text-gray-500 hover:text-gray-700">
+                <i class="bi bi-x-lg"></i>
+            </a>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" class="bg-white rounded-lg shadow-sm p-6">
+            {% csrf_token %}
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Subject Name</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                    <p class="text-red-500 text-sm">{{ form.name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Department</label>
+                    {{ form.department }}
+                    {% if form.department.errors %}
+                    <p class="text-red-500 text-sm">{{ form.department.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                    <p class="text-red-500 text-sm">{{ form.description.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Credit Hours</label>
+                    {{ form.credit_hours }}
+                    {% if form.credit_hours.errors %}
+                    <p class="text-red-500 text-sm">{{ form.credit_hours.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
+                    {{ form.grade_level }}
+                    {% if form.grade_level.errors %}
+                    <p class="text-red-500 text-sm">{{ form.grade_level.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Prerequisites</label>
+                    {{ form.prerequisites }}
+                    <p class="text-sm text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple subjects</p>
+                    {% if form.prerequisites.errors %}
+                    <p class="text-red-500 text-sm">{{ form.prerequisites.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Teachers</label>
+                    {{ form.teachers }}
+                    {% if form.teachers.errors %}
+                    <p class="text-red-500 text-sm">{{ form.teachers.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    {{ form.status }}
+                    {% if form.status.errors %}
+                    <p class="text-red-500 text-sm">{{ form.status.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="flex items-center justify-end space-x-4">
+                    <a href="{% url 'subjects:list' %}" class="px-4 py-2 border rounded-lg hover:bg-gray-50">Cancel</a>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        Save Subject
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+{% endblock %}

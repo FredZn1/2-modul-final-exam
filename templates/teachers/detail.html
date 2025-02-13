@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Teacher Details - {{ teacher.first_name }} {{ teacher.last_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="mb-8 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
+                <i class="bi bi-person text-3xl text-gray-400"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold">{{ teacher.first_name }} {{ teacher.last_name }}</h1>
+                <p class="text-gray-500">Teacher ID: {{ teacher.teacher_id }}</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <a href="{% url 'teacher_update' teacher.id %}" class="px-4 py-2 border rounded-lg hover:bg-gray-50">
+                <i class="bi bi-pencil"></i>
+                <span class="ml-2">Edit</span>
+            </a>
+            <a href="{% url 'teacher_delete' teacher.id %}" class="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100">
+                <i class="bi bi-trash"></i>
+                <span class="ml-2">Delete</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div class="lg:col-span-2 bg-white rounded-lg shadow-sm p-6">
+            <h2 class="text-lg font-semibold mb-4">Personal Information</h2>
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm text-gray-500">Email</label>
+                    <p class="text-gray-900">{{ teacher.email }}</p>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-500">Phone</label>
+                    <p class="text-gray-900">{{ teacher.phone }}</p>
+                </div>
+                <div class="col-span-2">
+                    <label class="block text-sm text-gray-500">Address</label>
+                    <p class="text-gray-900">{{ teacher.address }}</p>
+                </div>
+            </div>
+            <h2 class="text-lg font-semibold mt-8 mb-4">Professional Information</h2>
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm text-gray-500">Department</label>
+                    <p class="text-gray-900">{{ teacher.department }}</p>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-500">Position</label>
+                    <p class="text-gray-900">{{ teacher.position }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

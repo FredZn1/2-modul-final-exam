@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Students List{% endblock %}
+
+{% block content %}
+<main class="flex-1 overflow-y-auto p-8">
+    <div class="mb-8 flex justify-between items-center">
+        <h1 class="text-2xl font-bold">Students</h1>
+        <div class="flex items-center space-x-4">
+            <form method="get" class="relative">
+                <input type="search" name="q" placeholder="Search students..." class="pl-10 pr-4 py-2 border rounded-lg" value="{{ search_query }}">
+                <i class="bi bi-search absolute left-3 top-3 text-gray-400"></i>
+            </form>
+            <a href="{% url 'students:create' %}" class="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg">
+                <i class="bi bi-plus"></i>
+                <span>Add Student</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
+        <form method="get" class="flex flex-wrap gap-4">
+            <select name="group" class="border rounded-lg px-4 py-2">
+                <option value="">All Groups</option>
+                {% for group in groups %}
+                <option value="{{ group.name }}" {% if group_filter == group.name %}selected{% endif %}>{{ group.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Apply Filters</button>
+            <a href="{% url 'students:list' %}" class="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg">Clear Filters</a>
+        </form>
+    </div>
+
+    <!-- Students Table -->
+    <div class="bg-white rounded-lg shadow-sm">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50 border-b">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Name</th>
+                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">ID</th>
+                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Group</th>
+                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Grade</th>
+                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Status</th>
+                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    {% for student in students %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center space-x-3">
+                                <img src="{{ student.photo.url }}" class="rounded-full w-8 h-8">
+                                <div>
+                                    <p class="font-medium">{{ student.name }}</p>
+                                    <p class="text-sm text-gray-500">{{ student.email }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-sm">{{ student.student_id }}</td>
+                        <td class="px-6 py-4 text-sm">{{ student.group.name }}</td>
+                        <td class="px-6 py-4 text-sm">{{ student.grade }}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 {% if student.is_active %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %} rounded-full text-sm">
+                                {% if student.is_active %}Active{% else %}Inactive{% endif %}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center space-x-3">
+                                <a href="{{ student.get_detail_url }}" class="text-blue-600 hover:text-blue-800">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{{ student.get_update_url }}" class="text-gray-600 hover:text-gray-800">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form action="{{ student.get_delete_url }}" method="post" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="text-red-600 hover:text-red-800">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-gray-500">No students found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="px-6 py-4 border-t">
+            <div class="flex justify-between items-center">
+                <p class="text-sm text-gray-600">Showing {{ students.start_index }} to {{ students.end_index }} of {{ students.paginator.count }} students</p>
+                <div class="flex space-x-2">
+                    {% if students.has_previous %}
+                    <a href="?page={{ students.previous_page_number }}" class="px-3 py-1 border rounded hover:bg-gray-50">Previous</a>
+                    {% endif %}
+                    <span class="px-3 py-1 border rounded bg-blue-600 text-white">{{ students.number }}</span>
+                    {% if students.has_next %}
+                    <a href="?page={{ students.next_page_number }}" class="px-3 py-1 border rounded hover:bg-gray-50">Next</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
