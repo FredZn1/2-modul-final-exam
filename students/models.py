@@ -29,7 +29,7 @@ class Student(BaseModel):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True)
-    profile_photo = models.ImageField(upload_to='students/photos/', blank=True)
+    profile_photo = models.ImageField(upload_to='students/photos/', blank=True, null=True)
     date_of_birth = models.DateField()
     gender = models.CharField(max_length=10, choices=[('male', 'Male'), ('female', 'Female')])
     email = models.EmailField(unique=True)
@@ -44,10 +44,16 @@ class Student(BaseModel):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(f"{self.first_name} {self.last_name}")
+            full_name = f"{self.first_name} {self.last_name}".strip()
+            if full_name:
+                self.slug = slugify(full_name)
+            else:
+                self.slug = slugify(self.email)
         super().save(*args, **kwargs)
 
     def get_detail_url(self):
+        if not self.created_at:
+            return "#"
         return reverse('students:detail', args=[
             self.created_at.year,
             self.created_at.month,

@@ -40,12 +40,35 @@ class GroupForm(forms.ModelForm):
     def clean_academic_year(self):
         academic_year = self.cleaned_data.get('academic_year')
 
-        if academic_year and academic_year < 2000:
+        if academic_year is None:
+            raise forms.ValidationError("Academic year is required.")
+
+
+        if isinstance(academic_year, str):
+            try:
+                academic_year = int(academic_year)
+            except ValueError:
+                raise forms.ValidationError("Academic year must be a valid number.")
+
+        if academic_year < 2000:
             raise forms.ValidationError("Academic year cannot be earlier than 2000.")
+
         return academic_year
 
     def clean_max_students(self):
         max_students = self.cleaned_data.get('max_students')
-        if max_students is not None and max_students < 1:
+
+        if max_students is None:
             raise forms.ValidationError("The group must have at least one student.")
+
+
+        if isinstance(max_students, str):
+            try:
+                max_students = int(max_students)
+            except ValueError:
+                raise forms.ValidationError("Max students must be a valid number.")
+
+        if max_students < 1:
+            raise forms.ValidationError("The group must have at least one student.")
+
         return max_students

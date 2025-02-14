@@ -4,11 +4,13 @@ from django.shortcuts import get_object_or_404
 from .models import Department
 from .forms import DepartmentForm
 
+
 class HomePageView(ListView):
     model = Department
     template_name = 'dashboard.html'
     context_object_name = 'departments'
     paginate_by = 10
+
 
 class DepartmentListView(ListView):
     model = Department
@@ -22,7 +24,7 @@ class DepartmentListView(ListView):
         status = self.request.GET.get('status', '').strip()
 
         if head:
-            queryset = queryset.filter(head_of_department=head)
+            queryset = queryset.filter(head_of_department__icontains=head)
 
         if status:
             queryset = queryset.filter(status=status)
@@ -35,6 +37,7 @@ class DepartmentListView(ListView):
         context['status_choices'] = getattr(Department, 'STATUS_CHOICES', [])
         return context
 
+
 class DepartmentDetailView(DetailView):
     model = Department
     template_name = 'departments/detail.html'
@@ -43,11 +46,12 @@ class DepartmentDetailView(DetailView):
     def get_object(self, queryset=None):
         return get_object_or_404(
             Department,
-            created_at__year=self.kwargs['year'],
-            created_at__month=self.kwargs['month'],
-            created_at__day=self.kwargs['day'],
-            slug=self.kwargs['slug']
+            created_at__year=self.kwargs.get('year'),
+            created_at__month=self.kwargs.get('month'),
+            created_at__day=self.kwargs.get('day'),
+            slug=self.kwargs.get('slug')
         )
+
 
 class DepartmentCreateView(CreateView):
     model = Department
@@ -55,15 +59,18 @@ class DepartmentCreateView(CreateView):
     template_name = 'departments/form.html'
 
     def get_success_url(self):
-        return reverse(
-            'departments:detail',
-            kwargs={
-                'year': self.object.created_at.year,
-                'month': self.object.created_at.month,
-                'day': self.object.created_at.day,
-                'slug': self.object.slug
-            }
-        )
+        if hasattr(self.object, 'created_at') and hasattr(self.object, 'slug'):
+            return reverse(
+                'departments:detail',
+                kwargs={
+                    'year': self.object.created_at.year,
+                    'month': self.object.created_at.month,
+                    'day': self.object.created_at.day,
+                    'slug': self.object.slug
+                }
+            )
+        return reverse_lazy('departments:list')
+
 
 class DepartmentUpdateView(UpdateView):
     model = Department
@@ -71,15 +78,18 @@ class DepartmentUpdateView(UpdateView):
     template_name = 'departments/form.html'
 
     def get_success_url(self):
-        return reverse(
-            'departments:detail',
-            kwargs={
-                'year': self.object.created_at.year,
-                'month': self.object.created_at.month,
-                'day': self.object.created_at.day,
-                'slug': self.object.slug
-            }
-        )
+        if hasattr(self.object, 'created_at') and hasattr(self.object, 'slug'):
+            return reverse(
+                'departments:detail',
+                kwargs={
+                    'year': self.object.created_at.year,
+                    'month': self.object.created_at.month,
+                    'day': self.object.created_at.day,
+                    'slug': self.object.slug
+                }
+            )
+        return reverse_lazy('departments:list')
+
 
 class DepartmentDeleteView(DeleteView):
     model = Department
