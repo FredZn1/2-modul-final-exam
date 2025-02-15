@@ -9,14 +9,14 @@ class HomePageView(ListView):
     model = Department
     template_name = 'dashboard.html'
     context_object_name = 'departments'
-    paginate_by = 10
+
 
 
 class DepartmentListView(ListView):
     model = Department
     template_name = 'departments/list.html'
     context_object_name = 'departments'
-    paginate_by = 10
+
 
     def get_queryset(self):
         queryset = Department.objects.all()

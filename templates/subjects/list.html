@@ -1,71 +1,107 @@
 {% extends 'base.html' %}
+{% block title %}Subjects List{% endblock %}
 
 {% block content %}
-<main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-8">
-    <div class="mb-8 flex justify-between items-center">
-        <h1 class="text-2xl font-bold">Subjects</h1>
-        <div class="flex items-center space-x-4">
-            <form method="GET" class="relative">
-                <input type="search" name="q" placeholder="Search subjects..." class="pl-10 pr-4 py-2 border rounded-lg">
-                <i class="bi bi-search absolute left-3 top-3 text-gray-400"></i>
-            </form>
-            <a href="{% url 'subjects:create' %}" class="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg">
-                <i class="bi bi-plus"></i>
-                <span>Add Subject</span>
-            </a>
-        </div>
+<div class="flex justify-between items-center mb-8">
+    <h1 class="text-2xl font-bold">Subjects</h1>
+    <div class="flex items-center space-x-4">
+        <form method="GET" action="" class="relative">
+            <input type="search" name="q" placeholder="Search subjects..." class="pl-10 pr-4 py-2 border rounded-lg">
+            <i class="bi bi-search absolute left-3 top-3 text-gray-400"></i>
+        </form>
+        <a href="{% url 'subjects:create' %}" class="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg">
+            <i class="bi bi-plus"></i>
+            <span>Add Subject</span>
+        </a>
     </div>
+</div>
 
-    <div class="bg-white rounded-lg shadow-sm">
-        <div class="overflow-x-auto">
-            <table class="w-full">
-                <thead class="bg-gray-50 border-b">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Subject Name</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Department</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Teachers</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Students</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Status</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y">
-                    {% for subject in subjects %}
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4">
-                            <p class="font-medium">{{ subject.name }}</p>
-                            <p class="text-sm text-gray-500">{{ subject.level }}</p>
-                        </td>
-                        <td class="px-6 py-4 text-sm">{{ subject.department.name }}</td>
-                        <td class="px-6 py-4 text-sm">{{ subject.teachers.count }} teachers</td>
-                        <td class="px-6 py-4 text-sm">{{ subject.students.count }} students</td>
-                        <td class="px-6 py-4">
-                            <span class="px-2 py-1 rounded-full text-sm {% if subject.is_active %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
-                                {{ subject.get_status_display }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center space-x-3">
-                                <a href="{{ subject.get_detail_url }}" class="text-blue-600 hover:text-blue-800">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                                <a href="{{ subject.get_update_url }}" class="text-gray-600 hover:text-gray-800">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <a href="{{ subject.get_delete_url }}" class="text-red-600 hover:text-red-800">
-                                    <i class="bi bi-trash"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">No subjects found.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+<!-- Filters -->
+<div class="flex space-x-4 mb-4">
+    <select name="department" id="department-filter" class="border px-4 py-2 rounded-lg">
+        <option value="">All Departments</option>
+        {% for department in departments %}
+        <option value="{{ department.id }}" {% if request.GET.department == department.id|stringformat:"s" %}selected{% endif %}>{{ department.name }}</option>
+        {% endfor %}
+    </select>
+    <select name="status" id="status-filter" class="border px-4 py-2 rounded-lg">
+        <option value="">Status</option>
+        {% for code, name in status_choices %}
+        <option value="{{ code }}" {% if request.GET.status == code %}selected{% endif %}>{{ name }}</option>
+        {% endfor %}
+    </select>
+     <a href="{% url 'subjects:list' %}" class="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg">Clear Filters</a>
+</div>
+
+<!-- Subjects Table -->
+<div class="bg-white rounded-lg shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gray-50 border-b">
+                <tr>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Subject Name</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Department</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Teachers</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Students</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Status</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y">
+                {% for subject in subjects %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 font-medium">{{ subject.name }}</td>
+                    <td class="px-6 py-4 text-sm">{{ subject.department.name }}</td>
+                    <td class="px-6 py-4 text-sm">{{ subject.teachers.count }} teachers</td>
+                    <td class="px-6 py-4 text-sm">{{ subject.students.count }} students</td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-1 rounded-full text-sm {% if subject.status == 'active' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                            {{ subject.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center space-x-3">
+                            <a href="{{ subject.get_detail_url }}" class="text-blue-600 hover:text-blue-800">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="{{ subject.get_update_url }}" class="text-gray-600 hover:text-gray-800">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{{ subject.get_delete_url }}" class="text-red-600 hover:text-red-800">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">No subjects found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-</main>
+</div>
+
+<div class="px-6 py-4 border-t flex justify-between items-center">
+    <p class="text-sm text-gray-600">
+        Showing 1 to 10 of 12 subjects
+    </p>
+    <div class="flex space-x-2">
+        <span class="px-4 py-2 border rounded-lg text-gray-400 bg-gray-100">Previous</span>
+        <span class="px-4 py-2 border rounded-lg bg-blue-600 text-white">1</span>
+        <span class="px-4 py-2 border rounded-lg hover:bg-gray-100 text-gray-700">2</span>
+        <span class="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100">Next</span>
+    </div>
+</div>
+
+<script>
+document.getElementById('clearFilters').addEventListener('click', function() {
+    let url = new URL(window.location.href);
+    url.searchParams.delete('department');
+    url.searchParams.delete('status');
+    url.searchParams.delete('q');
+    window.location.href = url.toString();
+});
+</script>
 {% endblock %}

@@ -3,6 +3,7 @@ from django.shortcuts import reverse
 from django.utils.text import slugify
 from config.utils import BaseModel
 
+
 class Department(BaseModel):
     STATUS_CHOICES = [
         ('active', 'active'),

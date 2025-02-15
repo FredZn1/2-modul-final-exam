@@ -9,7 +9,7 @@
         <h1 class="text-2xl font-bold">Students</h1>
         <div class="flex items-center space-x-4">
             <form method="get" class="relative">
-                <input type="search" name="q" placeholder="Search students..." class="pl-10 pr-4 py-2 border rounded-lg" value="{{ search_query }}">
+                <input type="search" name="q" placeholder="Search students..." class="pl-10 pr-4 py-2 border rounded-lg" value="{{ request.GET.q }}">
                 <i class="bi bi-search absolute left-3 top-3 text-gray-400"></i>
             </form>
             <a href="{% url 'students:create' %}" class="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg">
@@ -21,15 +21,28 @@
 
     <!-- Filters -->
     <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
-        <form method="get" class="flex flex-wrap gap-4">
-            <select name="group" class="border rounded-lg px-4 py-2">
-                <option value="">All Groups</option>
-                {% for group in groups %}
-                <option value="{{ group.name }}" {% if group_filter == group.name %}selected{% endif %}>{{ group.name }}</option>
+        <form method="get" class="flex items-center gap-4">
+            <select name="grade" id="grade-filter" class="border rounded-lg px-4 py-2">
+                <option value="">All Grades</option>
+                {% for choice in grade_choices %}
+                <option value="{{ choice.0 }}" {% if request.GET.grade == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
                 {% endfor %}
             </select>
-            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Apply Filters</button>
-            <a href="{% url 'students:list' %}" class="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg">Clear Filters</a>
+
+            <select name="group" id="group-filter" class="border rounded-lg px-4 py-2">
+                <option value="">All Groups</option>
+                {% for group in groups %}
+                <option value="{{ group.id }}" {% if request.GET.group == group.id|stringformat:"s" %}selected{% endif %}>{{ group.name }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="status" class="border rounded-lg px-4 py-2">
+                <option value="">Status</option>
+                <option value="active" {% if request.GET.status == "active" %}selected{% endif %}>Active</option>
+                <option value="inactive" {% if request.GET.status == "inactive" %}selected{% endif %}>Inactive</option>
+            </select>
+
+            <a href="{% url 'students:list' %}" class="text-blue-600 hover:underline">Clear Filters</a>
         </form>
     </div>
 
@@ -50,38 +63,22 @@
                 <tbody class="divide-y">
                     {% for student in students %}
                     <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4">
-                            <div class="flex items-center space-x-3">
-                                <img src="{{ student.photo.url }}" class="rounded-full w-8 h-8">
-                                <div>
-                                    <p class="font-medium">{{ student.name }}</p>
-                                    <p class="text-sm text-gray-500">{{ student.email }}</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-sm">{{ student.student_id }}</td>
-                        <td class="px-6 py-4 text-sm">{{ student.group.name }}</td>
-                        <td class="px-6 py-4 text-sm">{{ student.grade }}</td>
+                        <td class="px-6 py-4">{{ student.name }}</td>
+                        <td class="px-6 py-4">{{ student.student_id }}</td>
+                        <td class="px-6 py-4">{{ student.group.name }}</td>
+                        <td class="px-6 py-4">{{ student.get_grade_display }}</td>
                         <td class="px-6 py-4">
                             <span class="px-2 py-1 {% if student.is_active %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %} rounded-full text-sm">
                                 {% if student.is_active %}Active{% else %}Inactive{% endif %}
                             </span>
                         </td>
                         <td class="px-6 py-4">
-                            <div class="flex items-center space-x-3">
-                                <a href="{{ student.get_detail_url }}" class="text-blue-600 hover:text-blue-800">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                                <a href="{{ student.get_update_url }}" class="text-gray-600 hover:text-gray-800">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <form action="{{ student.get_delete_url }}" method="post" class="inline">
-                                    {% csrf_token %}
-                                    <button type="submit" class="text-red-600 hover:text-red-800">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
+                            <a href="{{ student.get_detail_url }}" class="text-blue-600 hover:text-blue-800"><i class="bi bi-eye"></i></a>
+                            <a href="{{ student.get_update_url }}" class="text-gray-600 hover:text-gray-800"><i class="bi bi-pencil"></i></a>
+                            <form action="{{ student.get_delete_url }}" method="post" class="inline">
+                                {% csrf_token %}
+                                <button type="submit" class="text-red-600 hover:text-red-800"><i class="bi bi-trash"></i></button>
+                            </form>
                         </td>
                     </tr>
                     {% empty %}
@@ -93,21 +90,16 @@
             </table>
         </div>
 
-        <!-- Pagination -->
-        <div class="px-6 py-4 border-t">
-            <div class="flex justify-between items-center">
-                <p class="text-sm text-gray-600">Showing {{ students.start_index }} to {{ students.end_index }} of {{ students.paginator.count }} students</p>
-                <div class="flex space-x-2">
-                    {% if students.has_previous %}
-                    <a href="?page={{ students.previous_page_number }}" class="px-3 py-1 border rounded hover:bg-gray-50">Previous</a>
-                    {% endif %}
-                    <span class="px-3 py-1 border rounded bg-blue-600 text-white">{{ students.number }}</span>
-                    {% if students.has_next %}
-                    <a href="?page={{ students.next_page_number }}" class="px-3 py-1 border rounded hover:bg-gray-50">Next</a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+       <div class="px-6 py-4 border-t flex justify-between items-center">
+    <p class="text-sm text-gray-600">
+        Showing 1 to 10 of 12 departments
+    </p>
+    <div class="flex space-x-2">
+        <span class="px-4 py-2 border rounded-lg text-gray-400 bg-gray-100">Previous</span>
+        <span class="px-4 py-2 border rounded-lg bg-blue-600 text-white">1</span>
+        <span class="px-4 py-2 border rounded-lg hover:bg-gray-100 text-gray-700">2</span>
+        <span class="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100">Next</span>
     </div>
+</div>
 </main>
 {% endblock %}

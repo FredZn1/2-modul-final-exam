@@ -96,19 +96,15 @@
     </div>
 
     <!-- Pagination -->
-    <div class="px-6 py-4 border-t">
-        <div class="flex justify-between items-center">
-            <p class="text-sm text-gray-600">Showing {{ groups.start_index }} to {{ groups.end_index }} of {{ groups.paginator.count }} groups</p>
-            <div class="flex space-x-2">
-                {% if groups.has_previous %}
-                <a href="?page={{ groups.previous_page_number }}" class="px-3 py-1 border rounded hover:bg-gray-50">Previous</a>
-                {% endif %}
-                <span class="px-3 py-1 border rounded bg-blue-600 text-white">{{ groups.number }}</span>
-                {% if groups.has_next %}
-                <a href="?page={{ groups.next_page_number }}" class="px-3 py-1 border rounded hover:bg-gray-50">Next</a>
-                {% endif %}
-            </div>
-        </div>
+    <div class="px-6 py-4 border-t flex justify-between items-center">
+    <p class="text-sm text-gray-600">
+        Showing 1 to 10 of 12 departments
+    </p>
+    <div class="flex space-x-2">
+        <span class="px-4 py-2 border rounded-lg text-gray-400 bg-gray-100">Previous</span>
+        <span class="px-4 py-2 border rounded-lg bg-blue-600 text-white">1</span>
+        <span class="px-4 py-2 border rounded-lg hover:bg-gray-100 text-gray-700">2</span>
+        <span class="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100">Next</span>
     </div>
 </div>
 {% endblock %}

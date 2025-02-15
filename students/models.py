@@ -3,6 +3,7 @@ from django.utils.text import slugify
 from django.shortcuts import reverse
 from groups.models import Group
 from config.utils import BaseModel
+from departments.models import Department
 
 
 class Student(BaseModel):
@@ -41,14 +42,17 @@ class Student(BaseModel):
     parent_phone = models.CharField(max_length=20)
     parent_email = models.EmailField()
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
+    departments = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='students', null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            full_name = f"{self.first_name} {self.last_name}".strip()
-            if full_name:
-                self.slug = slugify(full_name)
-            else:
-                self.slug = slugify(self.email)
+            base_slug = slugify(f"{self.first_name} {self.last_name}")
+            unique_slug = base_slug
+            num = 1
+            while Student.objects.filter(slug=unique_slug).exists():
+                unique_slug = f"{base_slug}-{num}"
+                num += 1
+            self.slug = unique_slug
         super().save(*args, **kwargs)
 
     def get_detail_url(self):

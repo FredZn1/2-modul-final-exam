@@ -5,6 +5,7 @@
 {% block content %}
 <div class="container mx-auto px-4 py-8">
     <div class="bg-white shadow-md rounded-lg p-6">
+        <!-- Header Section -->
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center space-x-4">
                 <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
@@ -25,7 +26,9 @@
             </div>
         </div>
 
+        <!-- Information Section -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Personal Information -->
             <div class="lg:col-span-2 bg-white rounded-lg shadow-sm p-6">
                 <h2 class="text-lg font-semibold mb-4">Personal Information</h2>
                 <div class="grid grid-cols-2 gap-6">
@@ -60,6 +63,7 @@
                 </div>
             </div>
 
+            <!-- Academic Information -->
             <div class="bg-white rounded-lg shadow-sm p-6">
                 <h3 class="text-lg font-semibold mb-4">Academic Information</h3>
                 <div class="space-y-4">
@@ -81,6 +85,43 @@
                             {{ student.status }}
                         </span>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Parent Information & Performance -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+            <div class="lg:col-span-2 bg-white rounded-lg shadow-sm p-6">
+                <h2 class="text-lg font-semibold mb-4">Parent/Guardian Information</h2>
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm text-gray-500">Parent Name</label>
+                        <p class="text-gray-900">{{ student.parent_name }}</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-500">Relationship</label>
+                        <p class="text-gray-900">{{ student.parent_relationship }}</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-500">Parent Phone</label>
+                        <p class="text-gray-900">{{ student.parent_phone }}</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-500">Parent Email</label>
+                        <p class="text-gray-900">{{ student.parent_email }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <h3 class="text-lg font-semibold mb-4">Performance</h3>
+                <div>
+                    <label class="block text-sm text-gray-500">GPA</label>
+                    <p class="text-2xl font-bold text-gray-900">{{ student.gpa }}</p>
+                </div>
+                <div class="mt-4">
+                    <label class="block text-sm text-gray-500">Attendance</label>
+                    <p class="text-2xl font-bold text-gray-900">{{ student.attendance }}%</p>
                 </div>
             </div>
         </div>

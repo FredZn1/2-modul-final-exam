@@ -1,37 +1,54 @@
+from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.db.models import Q
-from .models import Group
+from .models import Group, Teacher
 from .forms import GroupForm
 
-
+# 📌 GROUP LIST VIEW
 class GroupListView(ListView):
     model = Group
-    template_name = 'groups/list.html'
-    context_object_name = 'groups'
-    paginate_by = 10  # Sahifadagi obyektlar soni
+    template_name = "groups/list.html"
+    context_object_name = "groups"
+    paginate_by = 10  # Sahifalash
 
     def get_queryset(self):
         queryset = Group.objects.all()
-        query = self.request.GET.get('q')
-        filter_date = self.request.GET.get('date')
 
+
+        grade_level = self.request.GET.get("grade_level")
+        teacher = self.request.GET.get("teacher")
+        status = self.request.GET.get("status")
+        query = self.request.GET.get("q")
+
+        if grade_level:
+            queryset = queryset.filter(grade_level=grade_level)
+        if teacher:
+            queryset = queryset.filter(teacher_id=teacher)
+        if status == "active":
+            queryset = queryset.filter(status=True)
+        elif status == "inactive":
+            queryset = queryset.filter(status=False)
         if query:
             queryset = queryset.filter(Q(name__icontains=query) | Q(description__icontains=query))
 
-        if filter_date:
-            queryset = queryset.filter(created_at__date=filter_date)
-
         return queryset
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["teachers"] = Teacher.objects.all()
+        return context
 
+
+# 📌 GROUP DETAIL VIEW
 class GroupDetailView(DetailView):
     model = Group
-    template_name = 'groups/detail.html'
-    context_object_name = 'group'
+    template_name = "groups/detail.html"
+    context_object_name = "group"
 
     def get_object(self, queryset=None):
-        return Group.objects.get(
+        return get_object_or_404(
+            Group,
             created_at__year=self.kwargs['year'],
             created_at__month=self.kwargs['month'],
             created_at__day=self.kwargs['day'],
@@ -39,27 +56,37 @@ class GroupDetailView(DetailView):
         )
 
 
+# 📌 GROUP CREATE VIEW
 class GroupCreateView(CreateView):
     model = Group
     form_class = GroupForm
-    template_name = 'groups/form.html'
-    success_url = reverse_lazy('groups:list')
+    template_name = "groups/form.html"
+    success_url = reverse_lazy("groups:list")
 
     def get_success_url(self):
         return self.object.get_detail_url()
 
 
+# 📌 GROUP UPDATE VIEW
 class GroupUpdateView(UpdateView):
     model = Group
     form_class = GroupForm
-    template_name = 'groups/form.html'
-    success_url = reverse_lazy('groups:list')
+    template_name = "groups/form.html"
+    success_url = reverse_lazy("groups:list")
 
     def get_success_url(self):
         return self.object.get_detail_url()
 
 
+# 📌 GROUP DELETE VIEW
 class GroupDeleteView(DeleteView):
     model = Group
-    template_name = 'groups/confirm-delete.html'
-    success_url = reverse_lazy('groups:list')
+    template_name = "groups/confirm-delete.html"
+    success_url = reverse_lazy("groups:list")
+
+
+# 📌 TEACHERS LIST VIEW (Yangi qo‘shildi!)
+class TeacherListView(ListView):
+    model = Teacher
+    template_name = "teachers/list.html"
+    context_object_name = "teachers"
