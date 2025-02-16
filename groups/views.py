@@ -5,12 +5,12 @@ from django.db.models import Q
 from .models import Group, Teacher
 from .forms import GroupForm
 
-# 📌 GROUP LIST VIEW
+
 class GroupListView(ListView):
     model = Group
     template_name = "groups/list.html"
     context_object_name = "groups"
-    paginate_by = 10  # Sahifalash
+
 
     def get_queryset(self):
         queryset = Group.objects.all()
@@ -40,7 +40,7 @@ class GroupListView(ListView):
         return context
 
 
-# 📌 GROUP DETAIL VIEW
+
 class GroupDetailView(DetailView):
     model = Group
     template_name = "groups/detail.html"
@@ -56,7 +56,7 @@ class GroupDetailView(DetailView):
         )
 
 
-# 📌 GROUP CREATE VIEW
+
 class GroupCreateView(CreateView):
     model = Group
     form_class = GroupForm
@@ -67,7 +67,7 @@ class GroupCreateView(CreateView):
         return self.object.get_detail_url()
 
 
-# 📌 GROUP UPDATE VIEW
+
 class GroupUpdateView(UpdateView):
     model = Group
     form_class = GroupForm
@@ -78,14 +78,14 @@ class GroupUpdateView(UpdateView):
         return self.object.get_detail_url()
 
 
-# 📌 GROUP DELETE VIEW
+
 class GroupDeleteView(DeleteView):
     model = Group
     template_name = "groups/confirm-delete.html"
     success_url = reverse_lazy("groups:list")
 
 
-# 📌 TEACHERS LIST VIEW (Yangi qo‘shildi!)
+
 class TeacherListView(ListView):
     model = Teacher
     template_name = "teachers/list.html"
