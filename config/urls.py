@@ -22,12 +22,14 @@ from departments.views import HomePageView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', HomePageView.as_view(), name='home'),
     path('departments/', include('departments.urls')),
     path('groups/', include('groups.urls')),
     path('students/', include('students.urls')),
     path('subjects/', include('subjects.urls')),
     path('teachers/', include('teachers.urls')),
-    path('', HomePageView.as_view(), name='home')
+    path('users/', include('users.urls')),
+
 
 ]
 if settings.DEBUG:
