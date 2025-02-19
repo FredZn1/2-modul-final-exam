@@ -3,6 +3,7 @@ from django.utils.text import slugify
 from django.urls import reverse
 from teachers.models import Teacher
 from config.utils import BaseModel
+from django.conf import settings
 
 class Group(BaseModel):
     STATUS_CHOICES = [
@@ -33,6 +34,8 @@ class Group(BaseModel):
     max_students = models.PositiveIntegerField(default=0)
     description = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)
+
 
     def save(self, *args, **kwargs):
         if not self.slug:

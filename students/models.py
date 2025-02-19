@@ -4,6 +4,7 @@ from django.shortcuts import reverse
 from groups.models import Group
 from config.utils import BaseModel
 from departments.models import Department
+from django.conf import settings
 
 
 class Student(BaseModel):
@@ -43,6 +44,8 @@ class Student(BaseModel):
     parent_email = models.EmailField()
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
     departments = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='students', null=True, blank=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)
+
 
     def save(self, *args, **kwargs):
         if not self.slug:

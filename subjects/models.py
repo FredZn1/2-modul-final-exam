@@ -4,6 +4,9 @@ from django.shortcuts import reverse
 from config.utils import BaseModel
 from teachers.models import Teacher
 from departments.models import Department
+from django.conf import settings
+
+
 
 class Subject(BaseModel):
     STATUS_CHOICES = [
@@ -35,6 +38,8 @@ class Subject(BaseModel):
     prerequisites = models.TextField(blank=True, null=True)
     teachers = models.ManyToManyField(Teacher, related_name='subjects')
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)
+
 
     def save(self, *args, **kwargs):
         if not self.slug:

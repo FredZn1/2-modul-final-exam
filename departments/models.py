@@ -2,6 +2,7 @@ from django.db import models
 from django.shortcuts import reverse
 from django.utils.text import slugify
 from config.utils import BaseModel
+from django.conf import settings
 
 
 class Department(BaseModel):
@@ -26,6 +27,8 @@ class Department(BaseModel):
     contact_email = models.EmailField(unique=True)
     contact_phone = models.CharField(max_length=20, blank=True, null=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)
+
 
     def save(self, *args, **kwargs):
         if not self.slug:

@@ -3,6 +3,7 @@ from django.utils.text import slugify
 from django.urls import reverse
 from config.utils import BaseModel
 from departments.models import Department
+from django.conf import settings
 
 class Teacher(BaseModel):
 
@@ -29,6 +30,8 @@ class Teacher(BaseModel):
     join_date = models.DateField()
     employment_type = models.CharField(max_length=20, choices=EMPLOYMENT_TYPE_CHOICES)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)
+
 
     def save(self, *args, **kwargs):
         if not self.slug:
