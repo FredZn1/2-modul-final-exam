@@ -2,14 +2,14 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.shortcuts import get_object_or_404
 from .models import Department
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import DepartmentForm
 
 
-class HomePageView(ListView):
+class HomePageView(LoginRequiredMixin, ListView):
     model = Department
     template_name = 'dashboard.html'
     context_object_name = 'departments'
-
 
 
 class DepartmentListView(ListView):
@@ -53,7 +53,7 @@ class DepartmentDetailView(DetailView):
         )
 
 
-class DepartmentCreateView(CreateView):
+class DepartmentCreateView(LoginRequiredMixin,CreateView):
     model = Department
     form_class = DepartmentForm
     template_name = 'departments/form.html'
@@ -72,7 +72,7 @@ class DepartmentCreateView(CreateView):
         return reverse_lazy('departments:list')
 
 
-class DepartmentUpdateView(UpdateView):
+class DepartmentUpdateView(LoginRequiredMixin,UpdateView):
     model = Department
     form_class = DepartmentForm
     template_name = 'departments/form.html'

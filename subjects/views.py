@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 from django.db.models import Q
 from .models import Subject, Department
 from .forms import SubjectForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class SubjectListView(ListView):
@@ -47,7 +48,7 @@ class SubjectDetailView(DetailView):
         return Subject.objects.get(slug=self.kwargs['slug'])
 
 
-class SubjectCreateView(CreateView):
+class SubjectCreateView(LoginRequiredMixin,CreateView):
     model = Subject
     form_class = SubjectForm
     template_name = 'subjects/form.html'
@@ -57,7 +58,7 @@ class SubjectCreateView(CreateView):
         return self.object.get_detail_url()
 
 
-class SubjectUpdateView(UpdateView):
+class SubjectUpdateView(LoginRequiredMixin,UpdateView):
     model = Subject
     form_class = SubjectForm
     template_name = 'subjects/form.html'

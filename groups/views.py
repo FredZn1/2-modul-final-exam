@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from django.db.models import Q
 from .models import Group, Teacher
 from .forms import GroupForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class GroupListView(ListView):
@@ -57,7 +58,7 @@ class GroupDetailView(DetailView):
 
 
 
-class GroupCreateView(CreateView):
+class GroupCreateView(LoginRequiredMixin,CreateView):
     model = Group
     form_class = GroupForm
     template_name = "groups/form.html"
@@ -68,7 +69,7 @@ class GroupCreateView(CreateView):
 
 
 
-class GroupUpdateView(UpdateView):
+class GroupUpdateView(LoginRequiredMixin,UpdateView):
     model = Group
     form_class = GroupForm
     template_name = "groups/form.html"

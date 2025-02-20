@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Student, Group
 from .forms import StudentForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class StudentListView(ListView):
     model = Student
@@ -52,13 +53,13 @@ class StudentDetailView(DetailView):
     template_name = 'students/detail.html'
     context_object_name = 'student'
 
-class StudentCreateView(CreateView):
+class StudentCreateView(LoginRequiredMixin,CreateView):
     model = Student
     form_class = StudentForm
     template_name = 'students/form.html'
     success_url = reverse_lazy('students:list')
 
-class StudentUpdateView(UpdateView):
+class StudentUpdateView(LoginRequiredMixin,UpdateView):
     model = Student
     form_class = StudentForm
     template_name = 'students/form.html'

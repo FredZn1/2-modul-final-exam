@@ -4,6 +4,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .models import Teacher, Department
 from subjects.models import Subject
 from .forms import TeacherForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class TeacherListView(ListView):
     model = Teacher
@@ -59,7 +60,7 @@ class TeacherDetailView(DetailView):
             slug=self.kwargs['slug']
         )
 
-class TeacherCreateView(CreateView):
+class TeacherCreateView(LoginRequiredMixin,CreateView):
     model = Teacher
     form_class = TeacherForm
     template_name = 'teachers/form.html'
@@ -68,7 +69,7 @@ class TeacherCreateView(CreateView):
     def get_success_url(self):
         return self.object.get_detail_url()
 
-class TeacherUpdateView(UpdateView):
+class TeacherUpdateView(LoginRequiredMixin,UpdateView):
     model = Teacher
     form_class = TeacherForm
     template_name = 'teachers/form.html'
